@@ -101,4 +101,21 @@ FROM customer q
     ON (k.country_id = c.country_id)
     WHERE country = 'Canada';
 
-#Identify all movies categorized as family films.
+SELECT title FROM film
+WHERE film_id IN(
+	SELECT film_id FROM film_category
+	WHERE category_id IN(
+		SELECT category_id FROM category
+        WHERE name='Family'
+    )
+);
+
+SELECT inventory.film_id, film.title, COUNT(rental.inventory_id) AS 'counts'
+FROM rental
+INNER JOIN inventory
+ON inventory.inventory_id = rental.inventory_id
+INNER JOIN film
+ON inventory.film_id = film.film_id
+GROUP BY rental.inventory_id
+ORDER BY counts DESC;
+

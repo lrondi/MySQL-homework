@@ -93,13 +93,13 @@ WHERE actor_id IN(
 
 SELECT first_name, last_name, email
 FROM customer q
-	INNER JOIN address a
-    ON (q.address_id = a.address_id)
-    INNER JOIN city c
-    ON (a.city_id = c.city_id)
-    INNER JOIN country k
-    ON (k.country_id = c.country_id)
-    WHERE country = 'Canada';
+INNER JOIN address a
+ON (q.address_id = a.address_id)
+INNER JOIN city c
+ON (a.city_id = c.city_id)
+INNER JOIN country k
+ON (k.country_id = c.country_id)
+WHERE country = 'Canada';
 
 SELECT title FROM film
 WHERE film_id IN(
@@ -110,12 +110,63 @@ WHERE film_id IN(
     )
 );
 
-SELECT inventory.film_id, film.title, COUNT(rental.inventory_id) AS 'counts'
+SELECT film.title, COUNT(rental.inventory_id) AS 'counts'
 FROM rental
-INNER JOIN inventory
+JOIN inventory
 ON inventory.inventory_id = rental.inventory_id
-INNER JOIN film
-ON inventory.film_id = film.film_id
+JOIN film
+ON (inventory.film_id = film.film_id)
 GROUP BY rental.inventory_id
 ORDER BY counts DESC;
 
+SELECT s.store_id, SUM(p.amount) AS 'Total_amount'
+FROM store s
+JOIN staff st
+ON s.store_id = st.store_id
+JOIN payment p 
+ON (p.staff_id = st.staff_id)
+GROUP BY s.store_id
+ORDER BY Total_amount;
+
+SELECT s.store_id, c.city, k.country
+FROM store s
+JOIN address a
+ON (s.address_id = a.address_id)
+JOIN city c
+ON (a.city_id = c.city_id)
+JOIN country k
+ON (c.country_id = k.country_id);
+
+
+SELECT category.name, SUM(payment.amount) AS 'Total'
+FROM category
+INNER JOIN film_category
+ON category.category_id = film_category.category_id
+INNER JOIN inventory
+ON film_category.film_id = inventory.film_id
+INNER JOIN rental
+ON inventory.inventory_id = rental.inventory_id
+INNER JOIN payment
+ON rental.rental_id = payment.rental_id
+GROUP BY category.category_id
+ORDER BY Total DESC
+LIMIT 5;
+
+CREATE VIEW gross_revenue AS
+SELECT category.name, SUM(payment.amount) AS 'Total'
+FROM category
+INNER JOIN film_category
+ON category.category_id = film_category.category_id
+INNER JOIN inventory
+ON film_category.film_id = inventory.film_id
+INNER JOIN rental
+ON inventory.inventory_id = rental.inventory_id
+INNER JOIN payment
+ON rental.rental_id = payment.rental_id
+GROUP BY category.category_id
+ORDER BY Total DESC
+LIMIT 5;
+
+SELECT * FROM gross_revenue;
+
+DROP VIEW gross_revenue;

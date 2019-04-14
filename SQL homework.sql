@@ -64,3 +64,41 @@ SELECT film_id
 FROM film
 WHERE title = 'HUNCHBACK IMPOSSIBLE'
 );
+
+SELECT c.first_name, c.last_name,
+SUM(p.amount) AS 'Total Amount Paid'
+FROM customer c
+JOIN payment p
+ON (c.customer_id = p.customer_id)
+GROUP BY p.customer_id
+ORDER BY c.last_name;
+
+SELECT title, language_id FROM film
+WHERE title LIKE 'K%' OR title LIKE 'Q%'
+AND language_id IN(
+SELECT language_id FROM language
+WHERE name = 'English'); 
+
+SELECT first_name, last_name 
+FROM actor
+WHERE actor_id IN(
+	SELECT actor_id 
+    FROM film_actor
+    WHERE film_id IN(
+		SELECT film_id 
+        FROM film
+        WHERE title =  'Alone Trip'
+        )
+);
+
+SELECT first_name, last_name, email
+FROM customer q
+	INNER JOIN address a
+    ON (q.address_id = a.address_id)
+    INNER JOIN city c
+    ON (a.city_id = c.city_id)
+    INNER JOIN country k
+    ON (k.country_id = c.country_id)
+    WHERE country = 'Canada';
+
+#Identify all movies categorized as family films.

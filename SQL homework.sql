@@ -60,9 +60,9 @@ GROUP BY film_actor.film_id;
 SELECT COUNT(store_id) AS 'Number of copies'
 FROM inventory
 WHERE film_id IN (
-SELECT film_id
-FROM film
-WHERE title = 'HUNCHBACK IMPOSSIBLE'
+	SELECT film_id
+	FROM film
+	WHERE title = 'HUNCHBACK IMPOSSIBLE'
 );
 
 SELECT c.first_name, c.last_name,
